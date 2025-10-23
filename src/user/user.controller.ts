@@ -8,10 +8,11 @@ import {
   Delete,
   Request,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CustomAuthGuard } from '../auth/custom-auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -20,9 +21,9 @@ export class UserController {
 
 
   @Get('profile')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(CustomAuthGuard)
   getProfile(@Request() req) {
-    return req.user; // this is populated by Passport from JWT
+    return req.user; // this is populated by our custom auth guard
   }
 
   @Get()
@@ -31,7 +32,7 @@ export class UserController {
   }
 
   @Put(':id')
-  async updateUser(@Param('id') id: string, @Body() userData: Partial<CreateUserDto>) {
+  async updateUser(@Param('id',ParseIntPipe) id: string, @Body() userData: Partial<CreateUserDto>) {
     return this.userService.updateUser(id, userData);
   }
 

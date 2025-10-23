@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { JwtService } from '@nestjs/jwt';
+import { TokenService } from './token.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async signup(data: { username: string; email: string; phoneNumber: string; password: string }) {
@@ -42,7 +42,7 @@ export class AuthService {
   async login(user: any) {
     const payload = { sub: user.id, email: user.email };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.tokenService.generateToken(payload),
     };
   }
 }
