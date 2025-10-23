@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { Blog } from '../blog/blog.model';
 import { CreateUserDto } from './dto/create-user.dto';
+import { RedisService } from '../redis/redis.service';
 
 
 @Injectable()
@@ -10,6 +11,7 @@ export class UserService {
   constructor(
     @InjectModel(User)
     private userModel: typeof User,
+    private redisService: RedisService,
   ) {}
 
 
@@ -19,7 +21,19 @@ export class UserService {
   
   
   async getAllUsers() {
-    return await this.userModel.findAll({ include: [Blog] });
+    // Try to get from cache first
+    const cachedUsers = await this.redisService.get('users:all');
+    if (cachedUsers) {
+      return cachedUsers;
+    }
+
+    // If not in cache, fetch from database
+    const users = await this.userModel.findAll({ include: [Blog] });
+    
+    // Cache the result for 5 minutes
+    await this.redisService.set('users:all', users, 300);
+    
+    return users;
   }
 
   async deleteUser(id: string) {
@@ -32,6 +46,21 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ where: { email } });
+    // Try to get from cache first
+    const cachedUser = await this.redisService.get<User>(`user:email:${email}`);
+    if (cachedUser) {
+      return cachedUser;
+    }
+  
+
+    // If not in cache, fetch from database
+    const user = await this.userModel.findOne({ where: { email } });
+    
+    // Cache the result for 10 minutes
+    if (user) {
+      await this.redisService.set(`user:email:${email}`, user, 600);
+    }
+    
+    return user;
   }
 }
