@@ -20,8 +20,12 @@ export class BlogController {
   // Create a new blog (protected)
   @UseGuards(CustomAuthGuard)
   @Post()
-  async create(@Body() body: { blogData: string }, @Request() req): Promise<Blog> {
+  async create(
+    @Body() body: { blogData: string },
+    @Request() req,
+  ): Promise<Blog> {
     const userId = req.user.id; // Extracted from our custom auth guard
+
     return this.blogService.createBlog(body.blogData, userId);
   }
 
@@ -46,7 +50,7 @@ export class BlogController {
     @Request() req,
   ): Promise<Blog> {
     const userId = req.user.id;
-    return this.blogService.updateBlog(userId, body.blogData);
+    return this.blogService.updateBlog(id, body.blogData, userId);
   }
 
   //  Delete blog (protected)
@@ -54,7 +58,7 @@ export class BlogController {
   @Delete(':id')
   async delete(@Param('id') id: number, @Request() req): Promise<void> {
     const userId = req.user.id;
-    return this.blogService.deleteBlog(userId);
+    return this.blogService.deleteBlog(id, userId);
   }
 
   // Get blogs for current user (protected)

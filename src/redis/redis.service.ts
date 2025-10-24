@@ -21,11 +21,17 @@ export class RedisService {
   async reset(): Promise<void> {
     // Note: reset method might not be available in all cache implementations
     // This is a placeholder - you might need to implement cache clearing differently
-    console.log('Cache reset requested - implementation depends on cache store');
+    console.log(
+      'Cache reset requested - implementation depends on cache store',
+    );
   }
 
   // User-specific caching methods
-  async cacheUser(userId: number, userData: any, ttl: number = 300): Promise<void> {
+  async cacheUser(
+    userId: number,
+    userData: any,
+    ttl: number = 300,
+  ): Promise<void> {
     await this.set(`user:${userId}`, userData, ttl);
   }
 
@@ -38,7 +44,11 @@ export class RedisService {
   }
 
   // Blog-specific caching methods
-  async cacheBlog(blogId: number, blogData: any, ttl: number = 300): Promise<void> {
+  async cacheBlog(
+    blogId: number,
+    blogData: any,
+    ttl: number = 300,
+  ): Promise<void> {
     await this.set(`blog:${blogId}`, blogData, ttl);
   }
 
@@ -51,7 +61,11 @@ export class RedisService {
   }
 
   // Session caching
-  async cacheSession(sessionId: string, sessionData: any, ttl: number = 3600): Promise<void> {
+  async cacheSession(
+    sessionId: string,
+    sessionData: any,
+    ttl: number = 3600,
+  ): Promise<void> {
     await this.set(`session:${sessionId}`, sessionData, ttl);
   }
 

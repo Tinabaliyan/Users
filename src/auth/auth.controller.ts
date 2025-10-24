@@ -1,5 +1,12 @@
 // src/auth/auth.controller.ts
-import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CustomAuthGuard } from './custom-auth.guard';
 
@@ -8,18 +15,29 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  signup(@Body() body: { username: string; email: string; phoneNumber: string; password: string }) {
+  signup(
+    @Body()
+    body: {
+      username: string;
+      email: string;
+      phoneNumber: string;
+      password: string;
+    },
+  ) {
     return this.authService.signup(body);
   }
 
   @Post('login')
   async login(@Body() loginDto: { email: string; password: string }) {
-    const user = await this.authService.validateUser(loginDto.email, loginDto.password);
+    const user = await this.authService.validateUser(
+      loginDto.email,
+      loginDto.password,
+    );
     const tokenData = await this.authService.login(user);
     return {
       ...tokenData,
       user: user,
-      message: 'Login successful'
+      message: 'Login successful',
     };
   }
 

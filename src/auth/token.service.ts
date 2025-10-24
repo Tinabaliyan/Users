@@ -6,21 +6,24 @@ export class TokenService {
   private readonly secretKey = 'SECRET_KEY'; // Use environment variable in production
   private readonly expiresIn = '1d';
 
-  generateToken(payload: { sub: number; email: string }): string {
+  generateToken(payload: { sub: number }): string {
     return jwt.sign(payload, this.secretKey, { expiresIn: this.expiresIn });
   }
 
-  verifyToken(token: string): { sub: number; email: string; iat: number; exp: number } {
+  verifyToken(token: string): {
+    sub: number;
+    iat: number;
+    exp: number;
+  } {
     try {
       const decoded = jwt.verify(token, this.secretKey) as any;
-      if (typeof decoded === 'string' || !decoded || !decoded.sub || !decoded.email) {
+      if (typeof decoded === 'string' || !decoded || !decoded.sub) {
         throw new Error('Invalid token payload');
       }
       return {
         sub: decoded.sub,
-        email: decoded.email,
         iat: decoded.iat,
-        exp: decoded.exp
+        exp: decoded.exp,
       };
     } catch (error) {
       throw new Error('Invalid token');

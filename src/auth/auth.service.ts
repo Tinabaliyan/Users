@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { TokenService } from './token.service';
 import * as bcrypt from 'bcrypt';
@@ -10,7 +14,12 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  async signup(data: { username: string; email: string; phoneNumber: string; password: string }) {
+  async signup(data: {
+    username: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
+  }) {
     const userExists = await this.userService.findByEmail(data.email);
     if (userExists) {
       throw new ConflictException('User already exists');
@@ -33,14 +42,15 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('User not found');
 
     const isPasswordMatching = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatching) throw new UnauthorizedException('Invalid credentials');
+    if (!isPasswordMatching)
+      throw new UnauthorizedException('Invalid credentials');
 
     const { password: _, ...userWithoutPassword } = user.toJSON();
     return userWithoutPassword;
   }
 
   async login(user: any) {
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.id };
     return {
       access_token: this.tokenService.generateToken(payload),
     };

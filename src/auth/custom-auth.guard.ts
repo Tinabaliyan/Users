@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { TokenService } from './token.service';
 import { UserService } from '../user/user.service';
 
@@ -25,14 +30,14 @@ export class CustomAuthGuard implements CanActivate {
     try {
       // Verify token
       const payload = this.tokenService.verifyToken(token);
-      
+
       // Check if token is expired
       if (this.tokenService.isTokenExpired(token)) {
         throw new UnauthorizedException('Token has expired');
       }
 
-      // Verify user still exists
-      const user = await this.userService.findByEmail(payload.email);
+      // Verify user still exists by ID
+      const user = await this.userService.findById(payload.sub);
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
@@ -40,7 +45,6 @@ export class CustomAuthGuard implements CanActivate {
       // Attach user to request
       request.user = {
         id: payload.sub,
-        email: payload.email,
         user: user,
       };
 

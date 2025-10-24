@@ -18,8 +18,6 @@ import { CustomAuthGuard } from '../auth/custom-auth.guard';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-
-
   @Get('profile')
   @UseGuards(CustomAuthGuard)
   getProfile(@Request() req) {
@@ -32,7 +30,10 @@ export class UserController {
   }
 
   @Put(':id')
-  async updateUser(@Param('id',ParseIntPipe) id: string, @Body() userData: Partial<CreateUserDto>) {
+  async updateUser(
+    @Param('id', ParseIntPipe) id: string,
+    @Body() userData: Partial<CreateUserDto>,
+  ) {
     return this.userService.updateUser(id, userData);
   }
 

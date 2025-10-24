@@ -12,7 +12,7 @@ async function bootstrap() {
     }),
   });
   app.use(cookieParser());
-  
+
   app.use(compression());
   app.use(
     session({
@@ -21,11 +21,11 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
-  
+
   app.enableVersioning({
     type: VersioningType.URI,
   });
-  
+
   await app.listen(process.env.PORT ?? 3000);
 }
 

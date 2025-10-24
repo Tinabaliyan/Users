@@ -22,16 +22,16 @@ export class RedisTestController {
     try {
       await this.redisService.set('health-check', 'OK', 60);
       const status = await this.redisService.get('health-check');
-      return { 
-        status: 'Redis is working!', 
+      return {
+        status: 'Redis is working!',
         healthCheck: status,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      return { 
-        status: 'Redis error', 
+      return {
+        status: 'Redis error',
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }

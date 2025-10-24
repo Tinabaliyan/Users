@@ -1,4 +1,12 @@
-import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, HasMany } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  AutoIncrement,
+  HasMany,
+} from 'sequelize-typescript';
 import { Blog } from '../blog/blog.model';
 
 @Table({ tableName: 'Users' })
